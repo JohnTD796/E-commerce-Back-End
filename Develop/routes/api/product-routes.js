@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
       price: req.body.price,
       stock: req.body.stock,
       category_id: req.body.category_id,
-      tags: req.body.tags
+      tagIds: req.body.tags
     });
     console.log(req.body.tags)
     // Check if there are tags in the request body
