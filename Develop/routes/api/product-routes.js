@@ -45,10 +45,10 @@ router.post('/', async (req, res) => {
       price: req.body.price,
       stock: req.body.stock,
       category_id: req.body.category_id,
-      tagIds: req.body.tags
+      tags: req.body.tags
     });
     console.log(req.body.tags)
-    // Check if there are tagIds in the request body
+    // Check if there are tags in the request body
     if (req.body.tags && req.body.tags.length) {
       const productTagIdArr = req.body.tags.map((tag_id) => {
         return {
@@ -70,20 +70,18 @@ router.post('/', async (req, res) => {
 // update product
 router.put('/:id', (req, res) => {
   // update product data
-  Product.update(req.body, {
-    where: {
-      id: req.params.id,
-    },
+  const productData = Product.update(req.body, {
+    where: {id: req.params.id},
   })
     .then((product) => {
-      if (req.body.tagIds && req.body.tagIds.length) {
+      if (req.body.tags && req.body.tags.length) {
         
         ProductTag.findAll({
           where: { product_id: req.params.id }
         }).then((productTags) => {
           // create filtered list of new tag_ids
           const productTagIds = productTags.map(({ tag_id }) => tag_id);
-          const newProductTags = req.body.tagIds
+          const newProductTags = req.body.tags
           .filter((tag_id) => !productTagIds.includes(tag_id))
           .map((tag_id) => {
             return {
@@ -94,7 +92,7 @@ router.put('/:id', (req, res) => {
 
             // figure out which ones to remove
           const productTagsToRemove = productTags
-          .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
+          .filter(({ tag_id }) => !req.body.tags.includes(tag_id))
           .map(({ id }) => id);
                   // run both actions
           return Promise.all([
